@@ -22,29 +22,18 @@ function listenForTurn(boardLocationDiv) {
 }
 
 function createGrid(numRows, numColumns) {
-
     // set up divs for storing each row of elements
     for (let i = 0; i < numRows; i++) {
-        const rowDiv = document.createElement("div")
-
-        $(rowDiv).addClass("row")
-                 .prop("id", "row-"+i)
-                 .css("width", "" + (numColumns * 100) + "px")
-
-        $("#grid").append(rowDiv)
+        $("#grid").append($("<div></div>").addClass("row")
+                                .prop("id", "row-"+i)
+                                .css("width", "" + (numColumns * 100) + "px"))
 
         // set up divs for individual elements
         for (let j = 0; j < numColumns; j++) {
-            const colDiv = document.createElement("div")
-            //const colDiv = $("div")   // something not quite working here
-
-            $(colDiv).addClass("column")
-                     .prop("id", "row-" + i + "-column-" + j)
-            
-            $("#row-"+i).append(colDiv)
-
+            $("#row-"+i).append($("<div></div>").addClass("column")
+                                                .prop("id", "row-"+i+"-column-"+j))
             // listen for clicks and take turn
-            listenForTurn(colDiv);
+            listenForTurn("#row-"+i+"-column-"+j);
         }
     }
 }
