@@ -8,15 +8,15 @@ function resetGrid() {
     }
     for (let i = 0; i < numRows; i++) {
         for (let j = 0; j < numColumns; j++) {
-            document.getElementById("row-" + i + "-column-" + j).style.backgroundColor = "blue";
+            $("#row-"+i+"-column-"+j).css("background-color", "blue");
         }
     }
     player = 0;
 }
 
 function listenForTurn(boardLocationDiv) {
-    boardLocationDiv.addEventListener("click", function() {
-        boardLocationDiv.style.backgroundColor = (player % 2 == 0 ? "red" : "yellow");
+    $(boardLocationDiv).click( function() {
+        $(boardLocationDiv).css("background-color", (player % 2 == 0 ? "red" : "yellow"));
         player++;
     })
 }
@@ -25,18 +25,23 @@ function createGrid(numRows, numColumns) {
 
     // set up divs for storing each row of elements
     for (let i = 0; i < numRows; i++) {
-        const rowDiv = document.createElement("div");
-        rowDiv.className = "row";
-        rowDiv.id = "row-" + i;
-        rowDiv.style.width = "" + (numColumns * 100) + "px"
-        document.getElementById("grid").appendChild(rowDiv);
+        const rowDiv = document.createElement("div")
+
+        $(rowDiv).addClass("row")
+                 .prop("id", "row-"+i)
+                 .css("width", "" + (numColumns * 100) + "px")
+
+        $("#grid").append(rowDiv)
 
         // set up divs for individual elements
         for (let j = 0; j < numColumns; j++) {
-            const colDiv = document.createElement("div");
-            colDiv.className = "column";
-            colDiv.id = "row-" + i + "-column-" + j;
-            document.getElementById("row-" + i).appendChild(colDiv);
+            const colDiv = document.createElement("div")
+            //const colDiv = $("div")   // something not quite working here
+
+            $(colDiv).addClass("column")
+                     .prop("id", "row-" + i + "-column-" + j)
+            
+            $("#row-"+i).append(colDiv)
 
             // listen for clicks and take turn
             listenForTurn(colDiv);
