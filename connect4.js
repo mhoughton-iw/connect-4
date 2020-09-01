@@ -14,11 +14,34 @@ function resetGrid() {
     player = 0;
 }
 
-function listenForTurn(boardLocationDiv) {
+function listenForRandomClick(boardLocationDiv) {
     $(boardLocationDiv).click( function() {
         $(boardLocationDiv).css("background-color", (player % 2 == 0 ? "red" : "yellow"));
         player++;
     })
+}
+
+function listenForTurn(i) {
+    $("#top-button-"+i).click( function() {
+        $("#row-0-column-"+i).css("background-color", (player % 2 == 0 ? "red" : "yellow"));
+        player++;
+        //setTimeout(function(){           
+        //    $("#row-0-column-"+i).css("background-color", "yellow");
+        // }, 1000)
+        //setTimeout(function(){           
+        //    $("#row-0-column-"+i).css("background-color", "green");
+        // }, 2000)
+    })
+}
+
+function createTopButtons(numColumns) {
+    // set up divs for individual elements
+    for (let i = 0; i < numColumns; i++) {
+        $("#top-buttons").append($("<button>"+i+"</button>").addClass("btn btn-secondary")
+                                            .prop("id", "top-button-"+i))
+        // listen for clicks and take turn
+        listenForTurn(i);
+    }
 }
 
 function createGrid(numRows, numColumns) {
@@ -33,11 +56,12 @@ function createGrid(numRows, numColumns) {
             $("#row-"+i).append($("<div></div>").addClass("column")
                                                 .prop("id", "row-"+i+"-column-"+j))
             // listen for clicks and take turn
-            listenForTurn("#row-"+i+"-column-"+j);
+            listenForRandomClick("#row-"+i+"-column-"+j);
         }
     }
 }
 
+createTopButtons(7);
 createGrid(6, 7);
 
 module = module || {};
