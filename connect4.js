@@ -1,11 +1,35 @@
 let player = 0;
 let turnCount = 0;
 
-function getWinningRow(grid) {
-  for (let i = 0; i < grid.numRows; i++) {
+const glbGame = {
+  numRows: 6,
+  numCols: 7,
+  state: [
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+  ]
+};
+
+function takeTurn(colId) {
+  for (let rowId = 0; rowId < glbGame.numRows; rowId++) {
+    if (glbGame.state[rowId][colId] === null) {
+      glbGame.state[rowId][colId] = (player % 2);
+      player += 1;
+      return true;
+    }
+  }
+  return false;
+}
+
+function getWinningRow(game) {
+  for (let i = 0; i < game.numRows; i++) {
     let rowWin = true;
-    for (let j = 0; j < grid.numCols - 1; j++) {
-      if (grid.state[i][j] !== grid.state[i][j + 1]) rowWin = false;
+    for (let j = 0; j < game.numCols - 1; j++) {
+      if (game.state[i][j] !== game.state[i][j + 1]) rowWin = false;
     }
     if (rowWin === true) {
       return i;
@@ -14,12 +38,12 @@ function getWinningRow(grid) {
   return null;
 }
 
-function getWinningCol(grid) {
+function getWinningCol(game) {
   // for loop for columns
-  for (let j = 0; j < grid.numCols; j++) {
+  for (let j = 0; j < game.numCols; j++) {
     let colWin = true;
-    for (let i = 0; i < grid.numRows - 1; i++) {
-      if (grid.state[i][j] !== grid.state[i + 1][j]) colWin = false;
+    for (let i = 0; i < game.numRows - 1; i++) {
+      if (game.state[i][j] !== game.state[i + 1][j]) colWin = false;
     }
     if (colWin === true) {
       return j;
@@ -29,22 +53,20 @@ function getWinningCol(grid) {
   return null;
 }
 
-function checkWinner(grid) {
-  console.log('checkWinner was called');
-
-  // let diagWin = checkDiagonal1(grid);
+function checkWinner(game) {
+  // let diagWin = checkDiagonal1(game);
   // if (diagWin !== null) return diagWin;
 
-  // diagWin = checkDiagonal2(grid);
+  // diagWin = checkDiagonal2(game);
   // if (diagWin !== null) return diagWin;
 
-  const rowWin = getWinningRow(grid);
-  if (rowWin !== null) return grid.state[rowWin][0];
+  const rowWin = getWinningRow(game);
+  if (rowWin !== null) return game.state[rowWin][0];
 
-  const colWin = getWinningCol(grid);
-  if (colWin !== null) return grid.state[0][colWin];
+  const colWin = getWinningCol(game);
+  if (colWin !== null) return game.state[0][colWin];
 
-  if (turnCount > grid.numSlots - 1) return 'nobody';
+  //if (turnCount > game.numSlots - 1) return 'nobody';
   return null;
 }
 
@@ -75,16 +97,29 @@ function listenForRandomClick(boardLocationDiv) {
   });
 }
 
+function updateBoard() {
+  for (let i = 0; i < glbGame.numRows; i += 1) {
+    for (let j = 0; j < glbGame.numCols; j += 1) {
+      if (glbGame.state[i][j] === 0) {
+        $(`#row-${i}-column-${j}`).css('background-color', 'red');
+      } else if (glbGame.state[i][j] === 1) {
+        $(`#row-${i}-column-${j}`).css('background-color', 'yellow');
+      } else {
+        $(`#row-${i}-column-${j}`).css('background-color', 'blue');
+      }
+    }
+  }
+}
+
 function listenForTurn(i) {
   $(`#top-button-${i}`).click(() => {
-    $(`#row-0-column-${i}`).css('background-color', (player % 2 === 0 ? 'red' : 'yellow'));
-    player += 1;
-    // setTimeout(function(){
-    //    $("#row-0-column-"+i).css("background-color", "yellow");
-    // }, 1000)
-    // setTimeout(function(){
-    //    $("#row-0-column-"+i).css("background-color", "green");
-    // }, 2000)
+    takeTurn(i);
+    updateBoard();
+    const winner = checkWinner(glbGame);
+    if (winner !== null) {
+      console.log('winneerrrrr');
+      $('h1').append('Winner!');
+    }
   });
 }
 
@@ -101,7 +136,7 @@ function createTopButtons(numColumns) {
 function createGrid(numRows, numColumns) {
   // set up divs for storing each row of elements
   for (let i = 0; i < numRows; i += 1) {
-    $('#grid').append($('<div></div>').addClass('row')
+    $('#grid').prepend($('<div></div>').addClass('row')
       .prop('id', `row-${i}`)
       .css('width', `${numColumns * 100}px`));
 
@@ -115,8 +150,8 @@ function createGrid(numRows, numColumns) {
   }
 }
 
-createTopButtons(7);
-createGrid(6, 7);
+createTopButtons(glbGame.numCols);
+createGrid(glbGame.numRows, glbGame.numCols);
 listenForReset();
 
 module = module || {};
