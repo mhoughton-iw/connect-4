@@ -1,4 +1,52 @@
 let player = 0;
+let turnCount = 0;
+
+function getWinningRow(grid) {
+  for (let i = 0; i < grid.numRows; i++) {
+    let rowWin = true;
+    for (let j = 0; j < grid.numCols - 1; j++) {
+      if (grid.state[i][j] !== grid.state[i][j + 1]) rowWin = false;
+    }
+    if (rowWin === true) {
+      return i;
+    }
+  }
+  return null;
+}
+
+function getWinningCol(grid) {
+  // for loop for columns
+  for (let j = 0; j < grid.numCols; j++) {
+    let colWin = true;
+    for (let i = 0; i < grid.numRows - 1; i++) {
+      if (grid.state[i][j] !== grid.state[i + 1][j]) colWin = false;
+    }
+    if (colWin === true) {
+      return j;
+    }
+  }
+
+  return null;
+}
+
+function checkWinner(grid) {
+  console.log('checkWinner was called');
+
+  // let diagWin = checkDiagonal1(grid);
+  // if (diagWin !== null) return diagWin;
+
+  // diagWin = checkDiagonal2(grid);
+  // if (diagWin !== null) return diagWin;
+
+  const rowWin = getWinningRow(grid);
+  if (rowWin !== null) return grid.state[rowWin][0];
+
+  const colWin = getWinningCol(grid);
+  if (colWin !== null) return grid.state[0][colWin];
+
+  if (turnCount > grid.numSlots - 1) return 'nobody';
+  return null;
+}
 
 function resetGrid() {
   const numRows = 6;
@@ -15,7 +63,7 @@ function resetGrid() {
 }
 
 function listenForReset() {
-  $('#reset-button').click(() => {
+  $('#reset-game').click(() => {
     resetGrid();
   });
 }
