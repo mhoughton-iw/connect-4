@@ -1,6 +1,27 @@
 let player = 0;
 let turnCount = 0;
 
+class Game {
+    numRows = 6;
+    numCols = 7;
+    state = [];
+
+    constructor (numRows, numCols) {
+      this.numRows = numRows;
+      this.numCols = numCols;
+      this.state = this.getInitialState(numRows, numCols);
+    }
+
+    getInitialState (numRows, numCols) {
+      const array = new Array(numRows);
+      for (let i = 0; i < array.length; i++) {
+        array[i] = new Array(numCols);
+        array[i].fill(null);
+      }
+      return array;
+    }
+}
+
 const glbGame = {
   numRows: 6,
   numCols: 7,
@@ -66,7 +87,7 @@ function checkWinner(game) {
   const colWin = getWinningCol(game);
   if (colWin !== null) return game.state[0][colWin];
 
-  //if (turnCount > game.numSlots - 1) return 'nobody';
+  // if (turnCount > game.numSlots - 1) return 'nobody';
   return null;
 }
 
@@ -87,13 +108,6 @@ function resetGrid() {
 function listenForReset() {
   $('#reset-game').click(() => {
     resetGrid();
-  });
-}
-
-function listenForRandomClick(boardLocationDiv) {
-  $(boardLocationDiv).click(() => {
-    $(boardLocationDiv).css('background-color', (player % 2 === 0 ? 'red' : 'yellow'));
-    player += 1;
   });
 }
 
@@ -144,14 +158,20 @@ function createGrid(numRows, numColumns) {
     for (let j = 0; j < numColumns; j += 1) {
       $(`#row-${i}`).append($('<div></div>').addClass('column')
         .prop('id', `row-${i}-column-${j}`));
-      // listen for clicks and take turn
-      listenForRandomClick(`#row-${i}-column-${j}`);
     }
   }
 }
 
-createTopButtons(glbGame.numCols);
-createGrid(glbGame.numRows, glbGame.numCols);
+game = new Game(6,7);
+// console.log(game.state);
+// game.state[3][2] = 'hello';
+// console.log(game.state);
+// game.state = game.getInitialState(3,4);
+// console.log(game.state);
+
+
+createTopButtons(game.numCols);
+createGrid(game.numRows, game.numCols);
 listenForReset();
 
 module = module || {};
