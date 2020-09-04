@@ -93,12 +93,12 @@ function checkWinner(game) {
 
 function resetGrid() {
   const numRows = 6;
-  const numColumns = 7;
-  if (numRows !== 6 || numColumns !== 7) {
+  const numCols = 7;
+  if (numRows !== 6 || numCols !== 7) {
     return;
   }
   for (let i = 0; i < numRows; i++) {
-    for (let j = 0; j < numColumns; j++) {
+    for (let j = 0; j < numCols; j++) {
       $(`#row-${i}-column-${j}`).css('background-color', 'blue');
     }
   }
@@ -131,15 +131,21 @@ function listenForTurn(i) {
     updateBoard();
     const winner = checkWinner(glbGame);
     if (winner !== null) {
-      console.log('winneerrrrr');
-      $('h1').append('Winner!');
+      if (winner === 0) {
+        $('#winner-name').text('red');
+        $('#winner-display').css('background-color', 'red');
+      } else {
+        $('#winner-name').text('yellow');
+        $('#winner-display').css('background-color', 'yellow');
+      }
+      $('#winner-display').show();
     }
   });
 }
 
-function createTopButtons(numColumns) {
+function createTopButtons(game) {
   // set up divs for individual elements
-  for (let i = 0; i < numColumns; i++) {
+  for (let i = 0; i < game.numCols; i++) {
     $('#top-buttons').append($(`<button>${i}</button>`).addClass('btn btn-secondary')
       .prop('id', `top-button-${i}`));
     // listen for clicks and take turn
@@ -147,15 +153,15 @@ function createTopButtons(numColumns) {
   }
 }
 
-function createGrid(numRows, numColumns) {
+function createGrid(numRows, numCols) {
   // set up divs for storing each row of elements
   for (let i = 0; i < numRows; i += 1) {
     $('#grid').prepend($('<div></div>').addClass('row')
       .prop('id', `row-${i}`)
-      .css('width', `${numColumns * 100}px`));
+      .css('width', `${numCols * 100}px`));
 
     // set up divs for individual elements
-    for (let j = 0; j < numColumns; j += 1) {
+    for (let j = 0; j < numCols; j += 1) {
       $(`#row-${i}`).append($('<div></div>').addClass('column')
         .prop('id', `row-${i}-column-${j}`));
     }
@@ -170,7 +176,7 @@ game = new Game(6,7);
 // console.log(game.state);
 
 
-createTopButtons(game.numCols);
+createTopButtons(game);
 createGrid(game.numRows, game.numCols);
 listenForReset();
 
