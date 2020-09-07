@@ -9,24 +9,28 @@ class Game {
     constructor (numRows, numCols) {
       this.numRows = numRows;
       this.numCols = numCols;
-      this.state = this.getInitialState(numRows, numCols);
+      this.state = this.getInitialState();
     }
 
-    getInitialState (numRows, numCols) {
-      const array = new Array(numRows);
-      for (let i = 0; i < array.length; i++) {
-        array[i] = new Array(numCols);
-        array[i].fill(null);
+    getInitialState() {
+      const array = new Array(this.numRows);
+      for (let r = 0; r < array.length; r++) {
+        array[r] = new Array(this.numCols);
+        array[r].fill(null);
       }
       return array;
     }
+
+    resetGame() {
+      this.state = this.getInitialState();
+    }
 }
 
-function takeTurn(game, cIdx) {
-  for (let rIdx = 0; rIdx < game.numRows; rIdx++) {
-    if (game.state[rIdx][cIdx] === null) {
-      game.state[rIdx][cIdx] = (player % 2);
-      player += 1;
+function takeTurn(game, c) {
+  for (let r = 0; r < game.numRows; r++) {
+    if (game.state[r][c] === null) {
+      game.state[r][c] = player;
+      player = (player + 1) % 2;
       return true;
     }
   }
@@ -34,30 +38,42 @@ function takeTurn(game, cIdx) {
 }
 
 function getWinningRow(game) {
-  for (let i = 0; i < game.numRows; i++) {
-    let rowWin = true;
-    for (let j = 0; j < game.numCols - 1; j++) {
-      if (game.state[i][j] !== game.state[i][j + 1]) rowWin = false;
-    }
-    if (rowWin === true) {
-      return i;
+  for (let r = 0; r < game.numRows; r++) {
+    let player = null;
+    let count = 0;
+    for (let c = 0; c < game.numCols - 1; c++) {
+      if (game.state[r][c] !== player) {
+        player = game.state[r][c];
+        count = 1;
+        continue;
+      }
+      count += 1;
+      if (count >= 4 && player !== null) {
+        console.log('winning row');
+        return player;
+      }
     }
   }
   return null;
 }
 
 function getWinningCol(game) {
-  // for loop for columns
-  for (let j = 0; j < game.numCols; j++) {
-    let colWin = true;
-    for (let i = 0; i < game.numRows - 1; i++) {
-      if (game.state[i][j] !== game.state[i + 1][j]) colWin = false;
-    }
-    if (colWin === true) {
-      return j;
+  for (let c = 0; c < game.numCols; c++) {
+    let player = null
+    let count = 0;
+    for (let r = 0; r < game.numRows - 1; r++) {
+      if (game.state[r][c] !== player) {
+        player = game.state[r][c];
+        count = 1;
+        continue;
+      }
+      count += 1;
+      if (count >= 4 && player != null) {
+        console.log('winning col');
+        return player;
+      }
     }
   }
-
   return null;
 }
 
@@ -69,10 +85,10 @@ function checkWinner(game) {
   // if (diagWin !== null) return diagWin;
 
   const rowWin = getWinningRow(game);
-  if (rowWin !== null) return game.state[rowWin][0];
+  if (rowWin !== null) return rowWin;
 
   const colWin = getWinningCol(game);
-  if (colWin !== null) return game.state[0][colWin];
+  if (colWin !== null) return colWin;
 
   // if (turnCount > game.numSlots - 1) return 'nobody';
   return null;
@@ -84,37 +100,40 @@ function resetGrid() {
   if (numRows !== 6 || numCols !== 7) {
     return;
   }
-  for (let i = 0; i < numRows; i++) {
-    for (let j = 0; j < numCols; j++) {
-      $(`#row-${i}-column-${j}`).css('background-color', 'blue');
+  for (let r = 0; r < numRows; r++) {
+    for (let c = 0; c < numCols; c++) {
+      $(`#row-${r}-column-${c}`).css('background-color', 'blue');
     }
   }
   player = 0;
 }
 
-function listenForReset() {
+function listenForReset(game) {
   $('#reset-game').click(() => {
-    resetGrid();
+    //resetGrid();
+    game.resetGame();
+    updateBoard(game)
+    player = 0;
   });
 }
 
 function updateBoard(game) {
-  for (let i = 0; i < game.numRows; i += 1) {
-    for (let j = 0; j < game.numCols; j += 1) {
-      if (game.state[i][j] === 0) {
-        $(`#row-${i}-column-${j}`).css('background-color', 'red');
-      } else if (game.state[i][j] === 1) {
-        $(`#row-${i}-column-${j}`).css('background-color', 'yellow');
+  for (let r = 0; r < game.numRows; r += 1) {
+    for (let c = 0; c < game.numCols; c += 1) {
+      if (game.state[r][c] === 0) {
+        $(`#row-${r}-column-${c}`).css('background-color', 'red');
+      } else if (game.state[r][c] === 1) {
+        $(`#row-${r}-column-${c}`).css('background-color', 'yellow');
       } else {
-        $(`#row-${i}-column-${j}`).css('background-color', 'blue');
+        $(`#row-${r}-column-${c}`).css('background-color', 'blue');
       }
     }
   }
 }
 
-function listenForTurn(game, i) {
-  $(`#top-button-${i}`).click(() => {
-    takeTurn(game, i);
+function listenForTurn(game, c) {
+  $(`#top-button-${c}`).click(() => {
+    takeTurn(game, c);
     updateBoard(game);
     const winner = checkWinner(game);
     if (winner !== null) {
@@ -132,25 +151,25 @@ function listenForTurn(game, i) {
 
 function createTopButtons(game) {
   // set up divs for individual elements
-  for (let i = 0; i < game.numCols; i++) {
-    $('#top-buttons').append($(`<button>${i}</button>`).addClass('btn btn-secondary')
-      .prop('id', `top-button-${i}`));
+  for (let c = 0; c < game.numCols; c++) {
+    $('#top-buttons').append($(`<button>${c}</button>`).addClass('btn btn-secondary')
+      .prop('id', `top-button-${c}`));
     // listen for clicks and take turn
-    listenForTurn(game, i);
+    listenForTurn(game, c);
   }
 }
 
 function createGrid(numRows, numCols) {
   // set up divs for storing each row of elements
-  for (let i = 0; i < numRows; i += 1) {
+  for (let r = 0; r < numRows; r += 1) {
     $('#grid').prepend($('<div></div>').addClass('row')
-      .prop('id', `row-${i}`)
+      .prop('id', `row-${r}`)
       .css('width', `${numCols * 100}px`));
 
     // set up divs for individual elements
-    for (let j = 0; j < numCols; j += 1) {
-      $(`#row-${i}`).append($('<div></div>').addClass('column')
-        .prop('id', `row-${i}-column-${j}`));
+    for (let c = 0; c < numCols; c += 1) {
+      $(`#row-${r}`).append($('<div></div>').addClass('column')
+        .prop('id', `row-${r}-column-${c}`));
     }
   }
 }
@@ -165,7 +184,7 @@ game = new Game(6,7);
 
 createTopButtons(game);
 createGrid(game.numRows, game.numCols);
-listenForReset();
+listenForReset(game);
 
 if (typeof module !== 'undefined') {
   module.exports = {
