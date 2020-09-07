@@ -22,19 +22,6 @@ class Game {
     }
 }
 
-const glbGame = {
-  numRows: 6,
-  numCols: 7,
-  state: [
-    [null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null],
-  ]
-};
-
 function takeTurn(game, cIdx) {
   for (let rIdx = 0; rIdx < game.numRows; rIdx++) {
     if (game.state[rIdx][cIdx] === null) {
