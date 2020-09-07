@@ -2,8 +2,8 @@ let player = 0;
 let turnCount = 0;
 
 class Game {
-    numRows = 6;
-    numCols = 7;
+    numRows = 0;
+    numCols = 0;
     state = [];
 
     constructor (numRows, numCols) {
@@ -180,7 +180,8 @@ createTopButtons(game);
 createGrid(game.numRows, game.numCols);
 listenForReset();
 
-module = module || {};
-module.exports = {
-  listenForTurn,
-};
+if (typeof module !== 'undefined') {
+  module.exports = {
+    listenForTurn,
+  }
+}
