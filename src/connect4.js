@@ -2,40 +2,44 @@ let player = 0;
 let turnCount = 0;
 
 class Game {
-    numRows = 0;
-    numCols = 0;
-    state = [];
+  numRows = 0;
+  numCols = 0;
+  turn = 0;
+  state = [];
 
-    constructor (numRows, numCols) {
-      this.numRows = numRows;
-      this.numCols = numCols;
-      this.state = this.getInitialState();
-    }
-
-    getInitialState() {
-      const array = new Array(this.numRows);
-      for (let r = 0; r < array.length; r++) {
-        array[r] = new Array(this.numCols);
-        array[r].fill(null);
-      }
-      return array;
-    }
-
-    resetGame() {
-      this.state = this.getInitialState();
-    }
-}
-
-function takeTurn(game, c) {
-  for (let r = 0; r < game.numRows; r++) {
-    if (game.state[r][c] === null) {
-      game.state[r][c] = player;
-      player = (player + 1) % 2;
-      return true;
-    }
+  constructor (numRows, numCols) {
+    this.numRows = numRows;
+    this.numCols = numCols;
+    this.turn = 0;
+    this.state = this.getInitialState();
   }
-  return false;
+
+  getInitialState() {
+    const array = new Array(this.numRows);
+    for (let r = 0; r < array.length; r++) {
+      array[r] = new Array(this.numCols);
+      array[r].fill(null);
+    }
+    return array;
+  }
+
+  resetGame() {
+    this.turn = 0;
+    this.state = this.getInitialState();
+  }
+
+  takeTurn(c) {
+    for (let r = 0; r < this.numRows; r++) {
+      if (this.state[r][c] === null) {
+        this.state[r][c] = this.turn;
+        this.turn = (this.turn + 1) % 2;
+        return true;
+      }
+    }
+    return false;
+  }
 }
+
 
 function getWinningRow(game) {
   for (let r = 0; r < game.numRows; r++) {
@@ -94,26 +98,10 @@ function checkWinner(game) {
   return null;
 }
 
-function resetGrid() {
-  const numRows = 6;
-  const numCols = 7;
-  if (numRows !== 6 || numCols !== 7) {
-    return;
-  }
-  for (let r = 0; r < numRows; r++) {
-    for (let c = 0; c < numCols; c++) {
-      $(`#row-${r}-column-${c}`).css('background-color', 'blue');
-    }
-  }
-  player = 0;
-}
-
 function listenForReset(game) {
   $('#reset-game').click(() => {
-    //resetGrid();
     game.resetGame();
     updateBoard(game)
-    player = 0;
   });
 }
 
@@ -133,7 +121,7 @@ function updateBoard(game) {
 
 function listenForTurn(game, c) {
   $(`#top-button-${c}`).click(() => {
-    takeTurn(game, c);
+    game.takeTurn(c);
     updateBoard(game);
     const winner = checkWinner(game);
     if (winner !== null) {
