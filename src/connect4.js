@@ -119,6 +119,13 @@ function listenForReset(game) {
     updateBoard(game);
     $('#winner-display').hide();
   });
+  $('#reset-score').click(() => {
+    // asynchronous response has been fetched
+    $.get("http://localhost:8080/game/state", function (data){
+      // Request finished. Do processing here.
+      $("#grid").append($("<li></li>").text(data));
+    });
+  });
 }
 
 function listenForTurn(game, c) {
