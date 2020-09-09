@@ -117,6 +117,7 @@ function listenForReset(game) {
   $('#reset-game').click(() => {
     game.resetGame();
     updateBoard(game);
+    $('#winner-display').hide();
   });
 }
 
