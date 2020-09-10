@@ -51,7 +51,6 @@ function getWinningRow(game) {
       }
       count += 1;
       if (count >= 4 && player !== null) {
-        console.log('winning row');
         return player;
       }
     }
@@ -71,7 +70,6 @@ function getWinningCol(game) {
       }
       count += 1;
       if (count >= 4 && player != null) {
-        console.log('winning col');
         return player;
       }
     }

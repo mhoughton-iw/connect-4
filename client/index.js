@@ -35,17 +35,31 @@ function listenForReset() {
   });
 }
 
-function listenForTurn(game, c) {
+function listenForTurn(c) {
   $(`#top-button-${c}`).click(() => {
     // TODO: this needs to be a POST move (column c)
-    game.takeTurn(c);
+    // game.takeTurn(c);
 
-    // TODO: GET new state and update UI
-    updateBoard(game);
+    $.ajax({
+      type: 'POST',
+      url: `/game/board/col/${c}`,
+      // data: JSON.stringify(c),
+      // contentType: 'application/json',
+      success: (game) => {
+        updateBoard(game);
+      },
+    });
+
+    // update UI with new state
+    // $.get(`${rootDir}/game/state`, (game) => {
+    //   updateBoard(game);
+    // });
 
     // check for winner
     $.get(`${rootDir}/game/winner`, (winner) => {
       if (winner !== null) {
+        console.log("winner is...");
+        console.log(winner);
         if (winner === 0) {
           $('#winner-name').text('red');
           $('#winner-display').css('background-color', 'red');
@@ -65,7 +79,7 @@ function createTopButtons(game) {
     $('#top-buttons').append($(`<button>${c}</button>`).addClass('btn btn-secondary')
       .prop('id', `top-button-${c}`));
     // listen for clicks and take turn
-    // listenForTurn(game, c);
+    listenForTurn(c);
   }
 }
 
@@ -91,20 +105,6 @@ function setUpGame() {
     createGrid(data.numRows, data.numCols);
   });
 }
-
-// const game = new Game(6, 7);
-// const game = getGame();
-// const game = $.get("http://localhost:8080/game/state");
-// let game = 0;
-
-// $.get(`${rootDir}/game/state`, (data) => {
-//   game = data;
-// });
-// const game = $.get(`${rootDir}/game/state`, (data) => createTopButtons(data));
-// game.state[3][2] = 'hello';
-// console.log(game.state);
-// game.state = game.getInitialState(3,4);
-// console.log(game.state);
 
 setUpGame();
 listenForReset();

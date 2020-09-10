@@ -6,24 +6,24 @@ const {
 
 const app = express();
 
+const game = new Game(6, 7);
+
 app.use(express.static('./client'));
 
 // needed for reading json
 // app.use(express.json());
 
-app.get('/game/reset', (req, res) => {
-  const game = new Game(6, 7);
+app.get('/game/reset', (_req, res) => {
+  game.resetGame();
   res.send(game);
 });
 
-app.get('/game/winner', (res) => {
-  const game = new Game(6, 7);
+app.get('/game/winner', (_req, res) => {
   const winner = checkWinner(game);
   res.send(winner);
 });
 
-app.get('/game/state', (req, res) => {
-  const game = new Game(6, 7);
+app.get('/game/state', (_req, res) => {
   res.send(game);
   // res.json({
   //   numRows: game.numRows,
@@ -37,8 +37,9 @@ app.get('/game/state/col/:j', (req, res) => {
   res.send(`Current state of column ${req.params.j} is:`);
 });
 
-app.put('/game/board/col/:j', (req, res) => {
-  res.send(`Adding counter to column ${req.params.j} is:`);
+app.post('/game/board/col/:j', (req, res) => {
+  game.takeTurn(req.params.j);
+  res.send(game);
 });
 
 app.listen(8080);
