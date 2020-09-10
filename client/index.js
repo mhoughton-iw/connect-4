@@ -18,10 +18,12 @@ function updateBoard(game) {
   }
 }
 
-function listenForReset(game) {
+function listenForReset() {
   $('#reset-game').click(() => {
-    game.resetGame();
-    updateBoard(game);
+    // TODO: switch to a get request
+    $.get(`${rootDir}/game/reset`, (game) => {
+      updateBoard(game);
+    });
     $('#winner-display').hide();
   });
   $('#reset-score').click(() => {
@@ -35,8 +37,13 @@ function listenForReset(game) {
 
 function listenForTurn(game, c) {
   $(`#top-button-${c}`).click(() => {
+    // TODO: this needs to be a POST move (column c)
     game.takeTurn(c);
+
+    // TODO: GET new state and update UI
     updateBoard(game);
+
+    // check for winner
     $.get(`${rootDir}/game/winner`, (winner) => {
       if (winner !== null) {
         if (winner === 0) {
@@ -100,9 +107,7 @@ function setUpGame() {
 // console.log(game.state);
 
 setUpGame();
-// createTopButtons(game);
-// createGrid(game.numRows, game.numCols);
-listenForReset(game);
+listenForReset();
 
 if (typeof module !== 'undefined') {
   module.exports = {
