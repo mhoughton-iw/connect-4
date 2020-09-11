@@ -5,13 +5,13 @@ const {
 } = require('./gameLogic.js');
 
 const app = express();
-
-const game = new Game(6, 7);
-
 app.use(express.static('./client'));
 
 // needed for reading json
 // app.use(express.json());
+
+// instantiate game object as a global
+const game = new Game(6, 7);
 
 app.get('/game/reset', (_req, res) => {
   game.resetGame();
@@ -19,18 +19,17 @@ app.get('/game/reset', (_req, res) => {
 });
 
 app.get('/game/winner', (_req, res) => {
+  // const p1 = 0;
+  // game.state[0][0] = p1;
+  // game.state[0][1] = p1;
+  // game.state[0][2] = p1;
+  // game.state[0][3] = p1;
   const winner = checkWinner(game);
-  res.send(winner);
+  res.json(winner);
 });
 
 app.get('/game/state', (_req, res) => {
   res.send(game);
-  // res.json({
-  //   numRows: game.numRows,
-  //   numCols: game.numCols,
-  //   turn: game.turn,
-  //   state: game.state,
-  // })
 });
 
 app.get('/game/state/col/:j', (req, res) => {

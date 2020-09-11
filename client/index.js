@@ -37,9 +37,7 @@ function listenForReset() {
 
 function listenForTurn(c) {
   $(`#top-button-${c}`).click(() => {
-    // TODO: this needs to be a POST move (column c)
-    // game.takeTurn(c);
-
+    // send request to place counter
     $.ajax({
       type: 'POST',
       url: `/game/board/col/${c}`,
@@ -50,15 +48,10 @@ function listenForTurn(c) {
       },
     });
 
-    // update UI with new state
-    // $.get(`${rootDir}/game/state`, (game) => {
-    //   updateBoard(game);
-    // });
-
-    // check for winner
+    // get result of win check
     $.get(`${rootDir}/game/winner`, (winner) => {
       if (winner !== null) {
-        console.log("winner is...");
+        console.log('winner is...');
         console.log(winner);
         if (winner === 0) {
           $('#winner-name').text('red');
