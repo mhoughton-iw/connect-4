@@ -2,7 +2,7 @@ function getWinningRow(game) {
   for (let r = 0; r < game.numRows; r++) {
     let player = null;
     let count = 0;
-    for (let c = 0; c < game.numCols - 1; c++) {
+    for (let c = 0; c < game.numCols; c++) {
       if (game.state[r][c] !== player) {
         player = game.state[r][c];
         count = 1;
@@ -21,7 +21,7 @@ function getWinningCol(game) {
   for (let c = 0; c < game.numCols; c++) {
     let player = null;
     let count = 0;
-    for (let r = 0; r < game.numRows - 1; r++) {
+    for (let r = 0; r < game.numRows; r++) {
       if (game.state[r][c] !== player) {
         player = game.state[r][c];
         count = 1;
