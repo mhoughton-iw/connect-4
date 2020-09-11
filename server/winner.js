@@ -6,6 +6,7 @@ function getWinningRow(game) {
       if (game.state[r][c] !== player) {
         player = game.state[r][c];
         count = 1;
+        // TODO: linter really doesn't like these statements here
         continue;
       }
       count += 1;
@@ -37,13 +38,12 @@ function getWinningCol(game) {
 }
 
 function checkWinner(game) {
+  // TODO: set up diagonal wins
   // let diagWin = checkDiagonal1(game);
   // if (diagWin !== null) return diagWin;
 
   // diagWin = checkDiagonal2(game);
   // if (diagWin !== null) return diagWin;
-  console.log('passing to checkWinner');
-  console.log(game.state);
 
   const rowWin = getWinningRow(game);
   if (rowWin !== null) return rowWin;
@@ -51,7 +51,7 @@ function checkWinner(game) {
   const colWin = getWinningCol(game);
   if (colWin !== null) return colWin;
 
-  // if (turnCount > game.numSlots - 1) return 'nobody';
+  // TODO: catch nobody wins
   return null;
 }
 

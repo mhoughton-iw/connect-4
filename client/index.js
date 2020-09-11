@@ -1,9 +1,7 @@
-// const {
-//   Game,
-// } = require('./game.js');
-
+// using shorthand global
 const rootDir = 'http://localhost:8080';
 
+// updates board UI using current game state
 function updateBoard(game) {
   for (let r = 0; r < game.numRows; r += 1) {
     for (let c = 0; c < game.numCols; c += 1) {
@@ -18,29 +16,30 @@ function updateBoard(game) {
   }
 }
 
+// handle both reset game and reset score buttons
 function listenForReset() {
   $('#reset-game').click(() => {
-    // TODO: switch to a get request
     $.get(`${rootDir}/game/reset`, (game) => {
       updateBoard(game);
     });
     $('#winner-display').hide();
   });
   $('#reset-score').click(() => {
-    // asynchronous response has been fetched
     $.get(`${rootDir}/game/state`, (data) => {
-      // Request finished. Do processing here.
+      // TODO: change this to something meaningful
       $('#grid').append($('<li></li>').text(data));
     });
   });
 }
 
+// handle interactive column placement buttons
 function listenForTurn(c) {
   $(`#top-button-${c}`).click(() => {
     // send request to place counter
     $.ajax({
       type: 'POST',
       url: `/game/board/col/${c}`,
+      // should remove the following but want to understand when I need them
       // data: JSON.stringify(c),
       // contentType: 'application/json',
       success: (game) => {
@@ -66,8 +65,8 @@ function listenForTurn(c) {
   });
 }
 
+// set up divs for counter placement events
 function createTopButtons(game) {
-  // set up divs for individual elements
   for (let c = 0; c < game.numCols; c++) {
     $('#top-buttons').append($(`<button>${c}</button>`).addClass('btn btn-secondary')
       .prop('id', `top-button-${c}`));
@@ -76,6 +75,7 @@ function createTopButtons(game) {
   }
 }
 
+// grid is defined using total number of rows and columns
 function createGrid(numRows, numCols) {
   // set up divs for storing each row of elements
   for (let r = 0; r < numRows; r += 1) {
@@ -91,8 +91,9 @@ function createGrid(numRows, numCols) {
   }
 }
 
+// handle game set up (both UI and calls to server)
 function setUpGame() {
-  // asynchronous response has been fetched
+  // this should be changed if game should persist after refresh
   $.get(`${rootDir}/game/reset`, (data) => {
     createTopButtons(data);
     createGrid(data.numRows, data.numCols);
@@ -101,9 +102,3 @@ function setUpGame() {
 
 setUpGame();
 listenForReset();
-
-if (typeof module !== 'undefined') {
-  module.exports = {
-    listenForTurn,
-  };
-}
