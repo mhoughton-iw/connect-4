@@ -48,7 +48,7 @@ function listenForTurn(c) {
       },
     });
 
-    // get result of win check
+    // handle result of win check
     $.get(`${rootDir}/game/winner`, (winner) => {
       if (winner !== null) {
         console.log('winner is...');

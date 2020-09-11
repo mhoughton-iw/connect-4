@@ -57,6 +57,8 @@ function checkWinner(game) {
 
 if (typeof module !== 'undefined') {
   module.exports = {
+    getWinningRow,
+    getWinningCol,
     checkWinner,
   };
 }

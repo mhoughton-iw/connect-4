@@ -1,8 +1,10 @@
 const express = require('express');
 const {
   Game,
+} = require('./game.js');
+const {
   checkWinner,
-} = require('./gameLogic.js');
+} = require('./winner.js');
 
 const app = express();
 app.use(express.static('./client'));
@@ -32,12 +34,12 @@ app.get('/game/state', (_req, res) => {
   res.send(game);
 });
 
-app.get('/game/state/col/:j', (req, res) => {
-  res.send(`Current state of column ${req.params.j} is:`);
+app.get('/game/state/col/:c', (req, res) => {
+  res.send(`Current state of column ${req.params.c} is:`);
 });
 
-app.post('/game/board/col/:j', (req, res) => {
-  game.takeTurn(req.params.j);
+app.post('/game/board/col/:c', (req, res) => {
+  game.takeTurn(req.params.c);
   res.send(game);
 });
 
