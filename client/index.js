@@ -28,6 +28,8 @@ function listenForReset() {
     $.get(`${rootDir}/game/state`, (data) => {
       // TODO: change this to something meaningful
       $('#grid').append($('<li></li>').text(data));
+      $('#game-area').hide();
+      $('#user-area').show();
     });
   });
 }
@@ -67,6 +69,7 @@ function listenForTurn(c) {
 
 // set up divs for counter placement events
 function createTopButtons(game) {
+  $('#top-buttons').empty();
   for (let c = 0; c < game.numCols; c++) {
     $('#top-buttons').append($(`<button>${c}</button>`).addClass('btn btn-secondary')
       .prop('id', `top-button-${c}`));
@@ -77,6 +80,7 @@ function createTopButtons(game) {
 
 // grid is defined using total number of rows and columns
 function createGrid(numRows, numCols) {
+  $('#grid').empty();
   // set up divs for storing each row of elements
   for (let r = 0; r < numRows; r += 1) {
     $('#grid').prepend($('<div></div>').addClass('row')
@@ -98,7 +102,17 @@ function setUpGame() {
     createTopButtons(data);
     createGrid(data.numRows, data.numCols);
   });
+  $('.reset').show();
 }
 
+function setUpUser() {
+  $('#game-area').hide();
+  $('#new-user').click(() => {
+    $('#user-area').hide();
+    $('#game-area').show();
+  });
+}
+
+setUpUser();
 setUpGame();
 listenForReset();

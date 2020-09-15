@@ -53,6 +53,11 @@
     height: 80px;
 }
 
+#user-area {
+    display: flex;
+    justify-content: center;
+}
+
 #winner-display {
     display: none;
     background-color: red;
@@ -64,5 +69,6 @@ body {
 }
 
 .reset{
+    display: none;
     margin-top: 10px;
 }

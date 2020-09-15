@@ -9,17 +9,39 @@
 
 <body>
   <h1>Connect4</h1>
-  <p id="winner-display">The winner is <span id="winner-name"></span></p>
-  <div class="btn-group" id="top-buttons" role="group" aria-label="Basic example">
-    <!-- interactive buttons will be inserted here -->
+  <div class="container" id="user-area">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Welcome!</h5>
+        <h6 class="card-subtitle mb-2 text-muted">We're almost ready to play!</h6>
+        <p class="card-text">Please create a new user or select an existing one.</p>
+        <div class="dropdown">
+          <button type="button" class="btn btn-primary" id="new-user">New User</button>
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="signInDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sign In
+          </button>
+          <div class="dropdown-menu" aria-labelledby="signInDrop">
+            <a class="dropdown-item">Action</a>
+            <a class="dropdown-item">Another action</a>
+            <a class="dropdown-item">Something else here</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="grid">
-    <!-- grid will be inserted here -->
-  </div> 
-  <div class="buttons">
-    <button type="button" class="btn btn-primary btn-lg reset" id="reset-game">Reset Game</button>
-    <button type="button" class="btn btn-secondary btn-lg reset" id="reset-score">Reset Score</button>
-  </div> 
+  <div id="game-area">
+    <p id="winner-display">The winner is <span id="winner-name"></span></p>
+    <div class="btn-group" id="top-buttons" role="group" aria-label="Basic example">
+      <!-- interactive buttons will be inserted here -->
+    </div>
+    <div id="grid">
+      <!-- grid will be inserted here -->
+    </div> 
+    <div class="buttons">
+      <button type="button" class="btn btn-primary btn-lg reset" id="reset-game">Reset Game</button>
+      <button type="button" class="btn btn-secondary btn-lg reset" id="reset-score">Reset Score</button>
+    </div> 
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
