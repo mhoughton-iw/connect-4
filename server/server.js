@@ -39,4 +39,21 @@ app.post('/game/board/col/:c', (req, res) => {
   res.send(game);
 });
 
+app.get('/users', async (req, res) => {
+  // should return an array of users
+  const myUsers = await fs.readFile('data/userStats.json', 'utf-8');
+  console.log(myUsers);
+  const parsedUsers = JSON.parse(myUsers);
+  res.json(parsedUsers);
+});
+
+app.get('/users/names', async (req, res) => {
+  // should return an array of users names
+  const myUsers = await fs.readFile('data/userStats.json', 'utf-8');
+  const parsedUsers = JSON.parse(myUsers);
+
+  const names = parsedUsers.map((user) => user.name);
+  res.json(names);
+});
+
 app.listen(8080);
