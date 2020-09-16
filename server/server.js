@@ -13,7 +13,9 @@ app.use(express.json());
 const game = new Game(6, 7);
 
 async function writeScores(p1, p2) {
-  const scores = { red: p1, yellow: p2 };
+  const scores = JSON.parse(await fs.readFile('data/gameStats.json', 'utf-8'));
+  scores[0].red += p1;
+  scores[0].yellow += p2;
   await fs.writeFile('data/gameStats.json', JSON.stringify(scores), 'utf-8');
 }
 
@@ -25,7 +27,9 @@ app.get('/game/reset', (_req, res) => {
 app.get('/game/winner', (_req, res) => {
   const winner = checkWinner(game);
   if (winner !== null) {
-    writeScores(1, 0);
+    const wins = [0, 0];
+    wins[winner] += 1;
+    writeScores(wins[0], wins[1]);
   }
   res.json(winner);
 });

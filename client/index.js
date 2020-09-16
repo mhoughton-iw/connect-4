@@ -16,20 +16,25 @@ function updateBoard(game) {
   }
 }
 
+function onResetGameButtonClick() {
+  $.get(`${rootDir}/game/reset`, (game) => {
+    updateBoard(game);
+  });
+  $('#winner-display').hide();
+}
+
 // handle both reset game and reset score buttons
 function listenForReset() {
-  $('#reset-game').click(() => {
-    $.get(`${rootDir}/game/reset`, (game) => {
-      updateBoard(game);
-    });
-    $('#winner-display').hide();
+  $('#reset-game').click(() => onResetGameButtonClick());
+  $('#reset-menu').click(() => {
+    onResetGameButtonClick();
+    $('#game-area').hide();
+    $('#user-area').show();
   });
   $('#reset-score').click(() => {
     $.get(`${rootDir}/game/state`, (data) => {
       // TODO: change this to something meaningful
       $('#grid').append($('<li></li>').text(data));
-      $('#game-area').hide();
-      $('#user-area').show();
     });
   });
 }
