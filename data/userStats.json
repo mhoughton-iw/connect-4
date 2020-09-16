@@ -1,0 +1,17 @@
+[
+    {
+        "userId": "5b16d178-b6b3-4345-91c5-8c927dd0b063",
+        "name": "Sally",
+        "score": 3
+    },
+    {
+        "userId": "27407af6-d961-4041-a5b0-899976bead03",
+        "name": "Dave",
+        "score": 0
+    },
+    {
+        "userId": "147d5076-b31f-4be0-b1b6-04aec7844670",
+        "name": "Ronald",
+        "score": 1
+    }
+]
