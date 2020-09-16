@@ -105,7 +105,16 @@ function setUpGame() {
   $('.reset').show();
 }
 
-function setUpUser() {
+function setUpUserPage() {
+  $.get(`${rootDir}/users/names`, (nameArray) => {
+    for (let n = 0; n < nameArray.length; n++) {
+      $('#userDrop').append($(`<a>${nameArray[n]}</a>`).addClass('dropdown-item'));
+    }
+  });
+}
+
+function loadUserPage() {
+  setUpUserPage();
   $('#game-area').hide();
   $('#new-user').click(() => {
     $('#user-area').hide();
@@ -113,6 +122,6 @@ function setUpUser() {
   });
 }
 
-setUpUser();
+loadUserPage();
 setUpGame();
 listenForReset();
