@@ -1,7 +1,7 @@
 const each = require('jest-each').default;
 const { Game } = require('../server/game');
 
-describe('hasTurnReset', () => {
+describe('resetGame', () => {
   each([
     [4, 4, 4],
     [32, 100, 100],
