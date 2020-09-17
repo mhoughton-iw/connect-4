@@ -33,7 +33,7 @@ function listenForReset() {
 }
 
 // handle interactive column placement buttons
-function listenForTurn(c) {
+function onTopButtonClick(c) {
   $(`#top-button-${c}`).click(() => {
     // send request to place counter
     $.ajax({
@@ -69,9 +69,8 @@ function listenForTurn(c) {
 function createTopButtons(game) {
   for (let c = 0; c < game.numCols; c++) {
     $('#top-buttons').append($(`<button>${c}</button>`).addClass('btn btn-secondary')
-      .prop('id', `top-button-${c}`));
-    // listen for clicks and take turn
-    listenForTurn(c);
+      .prop('id', `top-button-${c}`))
+      .click(() => onTopButtonClick(c));
   }
 }
 
