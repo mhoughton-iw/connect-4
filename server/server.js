@@ -19,7 +19,7 @@ async function writeScores(p1, p2) {
   await fs.writeFile('data/gameStats.json', JSON.stringify(scores), 'utf-8');
 }
 
-app.get('/game/reset', (_req, res) => {
+app.post('/game/reset', (_req, res) => {
   game.resetGame();
   res.send(game);
 });

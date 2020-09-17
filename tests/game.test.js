@@ -1,13 +1,13 @@
 const each = require('jest-each').default;
 const { Game } = require('../server/game');
 
-describe('hasTurnReset', () => {
+describe('resetGame', () => {
   each([
     [4, 4, 4],
     [32, 100, 100],
     [71, 8, 5],
     [15, 6, 7],
-  ]).it('testing turn count resets', (actualTurn, nr, nc) => {
+  ]).it('should reset the turn count', (actualTurn, nr, nc) => {
     const game = new Game(nr, nc);
     game.turn = actualTurn;
     game.resetGame();
@@ -15,7 +15,7 @@ describe('hasTurnReset', () => {
   });
 });
 
-describe('hasStateReset', () => {
+describe('resetGame', () => {
   each([
     [[
       [null, null, null],
@@ -37,7 +37,7 @@ describe('hasStateReset', () => {
       [null, null, null, null, 0, null],
       [1, null, null, null, 0, null],
     ], 6, 6],
-  ]).it('testing game state resets', (actual, nr, nc) => {
+  ]).it('should reset the game state', (actual, nr, nc) => {
     const expected = new Array(nr);
     for (let r = 0; r < expected.length; r++) {
       expected[r] = new Array(nc);
@@ -50,7 +50,7 @@ describe('hasStateReset', () => {
   });
 });
 
-describe('haveTwoTurnsBeenTaken', () => {
+describe('takeTurn', () => {
   each([
     [
       3, 3, 1, 1,
@@ -99,7 +99,7 @@ describe('haveTwoTurnsBeenTaken', () => {
         [null, null, null, null, null, null],
       ],
     ],
-  ]).it('testing two turns', (nr, nc, t1, t2, actual, expected) => {
+  ]).it('should take two turns when called twice', (nr, nc, t1, t2, actual, expected) => {
     const game = new Game(nr, nc);
     game.state = actual;
     game.takeTurn(t1);

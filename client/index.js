@@ -17,7 +17,7 @@ function updateBoard(game) {
 }
 
 function onResetGameButtonClick() {
-  $.get(`${rootDir}/game/reset`, (game) => {
+  $.post(`${rootDir}/game/reset`, (game) => {
     updateBoard(game);
   });
   $('#winner-display').hide();
@@ -40,35 +40,33 @@ function listenForReset() {
 }
 
 // handle interactive column placement buttons
-function listenForTurn(c) {
-  $(`#top-button-${c}`).click(() => {
-    // send request to place counter
-    $.ajax({
-      type: 'POST',
-      url: `/game/board/col/${c}`,
-      // should remove the following but want to understand when I need them
-      // data: JSON.stringify(c),
-      // contentType: 'application/json',
-      success: (game) => {
-        updateBoard(game);
-      },
-    });
+function onTopButtonClick(c) {
+  // send request to place counter
+  $.ajax({
+    type: 'POST',
+    url: `/game/board/col/${c}`,
+    // should remove the following but want to understand when I need them
+    // data: JSON.stringify(c),
+    // contentType: 'application/json',
+    success: (game) => {
+      updateBoard(game);
+    },
+  });
 
-    // handle result of win check
-    $.get(`${rootDir}/game/winner`, (winner) => {
-      if (winner !== null) {
-        console.log('winner is...');
-        console.log(winner);
-        if (winner === 0) {
-          $('#winner-name').text('red');
-          $('#winner-display').css('background-color', 'red');
-        } else {
-          $('#winner-name').text('yellow');
-          $('#winner-display').css('background-color', 'yellow');
-        }
-        $('#winner-display').show();
+  // handle result of win check
+  $.get(`${rootDir}/game/winner`, (winner) => {
+    if (winner !== null) {
+      console.log('winner is...');
+      console.log(winner);
+      if (winner === 0) {
+        $('#winner-name').text('red');
+        $('#winner-display').css('background-color', 'red');
+      } else {
+        $('#winner-name').text('yellow');
+        $('#winner-display').css('background-color', 'yellow');
       }
-    });
+      $('#winner-display').show();
+    }
   });
 }
 
@@ -78,8 +76,7 @@ function createTopButtons(game) {
   for (let c = 0; c < game.numCols; c++) {
     $('#top-buttons').append($(`<button>${c}</button>`).addClass('btn btn-secondary')
       .prop('id', `top-button-${c}`));
-    // listen for clicks and take turn
-    listenForTurn(c);
+    $(`#top-button-${c}`).click(() => onTopButtonClick(c));
   }
 }
 
@@ -103,7 +100,7 @@ function createGrid(numRows, numCols) {
 // handle game set up (both UI and calls to server)
 function setUpGame() {
   // this should be changed if game should persist after refresh
-  $.get(`${rootDir}/game/reset`, (data) => {
+  $.post(`${rootDir}/game/reset`, (data) => {
     createTopButtons(data);
     createGrid(data.numRows, data.numCols);
   });

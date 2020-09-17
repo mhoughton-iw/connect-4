@@ -1,7 +1,7 @@
 const each = require('jest-each').default;
 const { getWinningRow, getWinningCol } = require('../server/winner');
 
-describe('hasWonRows', () => {
+describe('getWinningRow', () => {
   each([
     [[[null, null, null, null],
       [null, null, null, null],
@@ -19,7 +19,7 @@ describe('hasWonRows', () => {
       [null, null, null, null, null],
       [null, 1, 1, 1, 1],
       [null, null, null, null, null]], 4, 5, 1],
-  ]).it('testing row win', (board, nr, nc, expected) => {
+  ]).it('should return a winning row', (board, nr, nc, expected) => {
     const game = {
       numRows: nr,
       numCols: nc,
@@ -29,7 +29,7 @@ describe('hasWonRows', () => {
   });
 });
 
-describe('hasWonCols', () => {
+describe('getWinningCol', () => {
   each([
     [[[null, null, null, null],
       [null, null, null, null],
@@ -51,7 +51,7 @@ describe('hasWonCols', () => {
       [null, null, 1, null, null, null],
       [null, null, 1, null, null, null],
       [null, null, 1, null, null, null]], 4, 6, 1],
-  ]).it('testing col win', (board, nr, nc, expected) => {
+  ]).it('should return a winning column', (board, nr, nc, expected) => {
     const game = {
       numRows: nr,
       numCols: nc,
