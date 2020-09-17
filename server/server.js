@@ -11,7 +11,7 @@ app.use(express.static('./client'));
 // set up game object as a global
 const game = new Game(6, 7);
 
-app.get('/game/reset', (_req, res) => {
+app.post('/game/reset', (_req, res) => {
   game.resetGame();
   res.send(game);
 });
