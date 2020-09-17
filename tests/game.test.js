@@ -1,13 +1,13 @@
 const each = require('jest-each').default;
 const { Game } = require('../server/game');
 
-describe('hasTurnReset', () => {
+describe('resetGame', () => {
   each([
     [4, 4, 4],
     [32, 100, 100],
     [71, 8, 5],
     [15, 6, 7],
-  ]).it('testing turn count resets', (actualTurn, nr, nc) => {
+  ]).it('should reset the turn count', (actualTurn, nr, nc) => {
     const game = new Game(nr, nc);
     game.turn = actualTurn;
     game.resetGame();
