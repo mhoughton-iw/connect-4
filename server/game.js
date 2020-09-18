@@ -9,7 +9,6 @@ class Game {
     this.numCols = numCols;
     this.turn = 0;
     this.state = this.getInitialState();
-    console.log('game instantiated')
   }
 
   getInitialState() {
@@ -27,7 +26,6 @@ class Game {
   }
 
   takeTurn(c) {
-    console.log('taking turn')
     for (let r = 0; r < this.numRows; r++) {
       if (this.state[r][c] === null) {
         this.state[r][c] = this.turn;

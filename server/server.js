@@ -59,4 +59,14 @@ app.get('/users/names', async (req, res) => {
   res.json(names);
 });
 
-app.listen(8080);
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(8080, () => {
+    console.log('server started on port 8080');
+  });
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    app,
+  };
+}

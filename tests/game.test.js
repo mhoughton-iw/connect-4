@@ -1,6 +1,17 @@
 const each = require('jest-each').default;
 const { Game } = require('../server/game');
 
+describe('getInitialState', () => {
+  each([
+    [2, 3, [[null, null, null], [null, null, null]]],
+    [3, 1, [[null], [null], [null]]],
+    [3, 3, [[null, null, null], [null, null, null], [null, null, null]]],
+  ]).it('should return an empty (%s x %s) array', (nr, nc, actual) => {
+    const game = new Game(nr, nc);
+    expect(game.getInitialState()).toStrictEqual(actual);
+  });
+});
+
 describe('resetGame', () => {
   each([
     [4, 4, 4],
@@ -13,9 +24,6 @@ describe('resetGame', () => {
     game.resetGame();
     expect(game.turn).toBe(0);
   });
-});
-
-describe('resetGame', () => {
   each([
     [[
       [null, null, null],
@@ -51,6 +59,29 @@ describe('resetGame', () => {
 });
 
 describe('takeTurn', () => {
+  each([
+    [
+      3, 3, 1,
+      [
+        [null, 0, null],
+        [null, 1, null],
+        [null, 0, null],
+      ],
+    ],
+    [
+      3, 4, 2,
+      [
+        [null, 1, 1, null],
+        [null, null, 0, null],
+        [null, null, 0, null],
+      ],
+    ],
+  ]).it('should not take a turn when column is full', (nr, nc, col, actual) => {
+    const game = new Game(nr, nc);
+    game.state = actual;
+    expect(game.takeTurn(col)).toBe(false);
+    expect(game.state).toStrictEqual(actual);
+  });
   each([
     [
       3, 3, 1, 1,
@@ -102,8 +133,8 @@ describe('takeTurn', () => {
   ]).it('should take two turns when called twice', (nr, nc, t1, t2, actual, expected) => {
     const game = new Game(nr, nc);
     game.state = actual;
-    game.takeTurn(t1);
-    game.takeTurn(t2);
+    expect(game.takeTurn(t1)).toBe(true);
+    expect(game.takeTurn(t2)).toBe(true);
     expect(game.state).toStrictEqual(expected);
   });
 });
