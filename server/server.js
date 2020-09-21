@@ -1,4 +1,5 @@
 const express = require('express');
+const { fdatasync } = require('fs');
 const fs = require('fs').promises;
 const { Game } = require('./game.js');
 const { checkWinner } = require('./winner.js');
@@ -12,6 +13,17 @@ app.use(express.json());
 // set up game object as a global
 const game = new Game(6, 7);
 
+async function resetScores() {
+  const scores = JSON.parse(await fs.readFile('data/gameStats.json', 'utf-8'));
+  scores[0].red = 0;
+  scores[0].yellow = 0;
+  await fs.writeFile('data/gameStats.json', JSON.stringify(scores), 'utf-8');
+}
+
+async function readScores() {
+  return fs.readFile('data/gameStats.json', 'utf-8');
+}
+
 async function writeScores(p1, p2) {
   const scores = JSON.parse(await fs.readFile('data/gameStats.json', 'utf-8'));
   scores[0].red += p1;
@@ -21,7 +33,20 @@ async function writeScores(p1, p2) {
 
 app.post('/game/reset', (_req, res) => {
   game.resetGame();
+  res.status(200);
   res.send(game);
+});
+
+app.get('/game/scores', async (_req, res) => {
+  const scores = await readScores();
+  res.status(200);
+  res.json(JSON.parse(scores)[0]);
+});
+
+app.post('/game/scores/reset', async (_req, res) => {
+  await resetScores();
+  res.status(200);
+  res.json({ red: 0, yellow: 0 });
 });
 
 app.get('/game/winner', (_req, res) => {
@@ -35,11 +60,14 @@ app.get('/game/winner', (_req, res) => {
 });
 
 app.get('/game/state', (_req, res) => {
+  res.status(200);
   res.send(game);
 });
 
 app.post('/game/board/col/:c', (req, res) => {
   game.takeTurn(req.params.c);
+  console.log(game.state);
+  res.status(200);
   res.send(game);
 });
 
@@ -60,8 +88,12 @@ app.get('/users/names', async (req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(8080, () => {
-    console.log('server started on port 8080');
+  app.listen(8080, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('server started on port 8080');
+    }
   });
 }
 

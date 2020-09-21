@@ -17,6 +17,14 @@ function updateBoard(game) {
   }
 }
 
+function getScores() {
+  $.get(`${rootDir}/game/scores`, (scores) => {
+    // TODO: change this to something meaningful
+    $('#red-player-score').text(scores.red);
+    $('#yellow-player-score').text(scores.yellow);
+  });
+}
+
 function onResetGameButtonClick() {
   $.post(`${rootDir}/game/reset`, (game) => {
     updateBoard(game);
@@ -33,9 +41,10 @@ function listenForReset() {
     $('#user-area').show();
   });
   $('#reset-score').click(() => {
-    $.get(`${rootDir}/game/state`, (data) => {
+    $.post(`${rootDir}/game/scores/reset`, (data) => {
       // TODO: change this to something meaningful
-      $('#grid').append($('<li></li>').text(data));
+      $('#red-player-score').text(data.red);
+      $('#yellow-player-score').text(data.yellow);
     });
   });
 }
@@ -57,8 +66,7 @@ function onTopButtonClick(c) {
   // handle result of win check
   $.get(`${rootDir}/game/winner`, (winner) => {
     if (winner !== null) {
-      console.log('winner is...');
-      console.log(winner);
+      getScores();
       if (winner === 0) {
         $('#winner-name').text('red');
         $('#winner-display').addClass('bg-danger').addClass('text-white')
@@ -104,6 +112,8 @@ function createGrid(numRows, numCols) {
 
 // handle game set up (both UI and calls to server)
 function setUpGame() {
+  // this should be changed for multiplayer compatibility
+  getScores();
   // this should be changed if game should persist after refresh
   $.post(`${rootDir}/game/reset`, (data) => {
     createTopButtons(data);
