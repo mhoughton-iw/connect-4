@@ -6,11 +6,16 @@ function updateBoard(game) {
   for (let r = 0; r < game.numRows; r += 1) {
     for (let c = 0; c < game.numCols; c += 1) {
       if (game.state[r][c] === 0) {
-        $(`#row-${r}-column-${c}`).css('background-color', 'red');
+        // $(`#row-${r}-column-${c}`).css('background-color', 'red');
+        $(`#row-${r}-column-${c}`).addClass('bg-danger').removeClass('bg-white');
       } else if (game.state[r][c] === 1) {
-        $(`#row-${r}-column-${c}`).css('background-color', 'yellow');
+        // $(`#row-${r}-column-${c}`).css('background-color', 'yellow');
+        $(`#row-${r}-column-${c}`).addClass('bg-warning').removeClass('bg-white');
       } else {
-        $(`#row-${r}-column-${c}`).css('background-color', 'blue');
+        $(`#row-${r}-column-${c}`).addClass('bg-white')
+          .removeClass('bg-danger bg-warning');
+        // $(`#row-${r}-column-${c}`).css('background-color', 'blue');
+        // $(`#row-${r}-column-${c}`).toggleClass('bg-primary bg-danger');
       }
     }
   }
@@ -60,10 +65,14 @@ function onTopButtonClick(c) {
       console.log(winner);
       if (winner === 0) {
         $('#winner-name').text('red');
-        $('#winner-display').css('background-color', 'red');
+        $('#winner-display').addClass('bg-danger').addClass('text-white')
+          .removeClass('bg-warning')
+          .removeClass('text-dark');
       } else {
         $('#winner-name').text('yellow');
-        $('#winner-display').css('background-color', 'yellow');
+        $('#winner-display').addClass('bg-warning').addClass('text-dark')
+          .removeClass('bg-danger')
+          .removeClass('text-white');
       }
       $('#winner-display').show();
     }
@@ -85,13 +94,13 @@ function createGrid(numRows, numCols) {
   $('#grid').empty();
   // set up divs for storing each row of elements
   for (let r = 0; r < numRows; r += 1) {
-    $('#grid').prepend($('<div></div>').addClass('row')
+    $('#grid').prepend($('<div></div>').addClass('row bg-primary')
       .prop('id', `row-${r}`)
       .css('width', `${numCols * 100}px`));
 
     // set up divs for individual elements
     for (let c = 0; c < numCols; c += 1) {
-      $(`#row-${r}`).append($('<div></div>').addClass('column')
+      $(`#row-${r}`).append($('<div></div>').addClass('column bg-white')
         .prop('id', `row-${r}-column-${c}`));
     }
   }
