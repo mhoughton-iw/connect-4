@@ -6,16 +6,12 @@ function updateBoard(game) {
   for (let r = 0; r < game.numRows; r += 1) {
     for (let c = 0; c < game.numCols; c += 1) {
       if (game.state[r][c] === 0) {
-        // $(`#row-${r}-column-${c}`).css('background-color', 'red');
         $(`#row-${r}-column-${c}`).addClass('bg-danger').removeClass('bg-white');
       } else if (game.state[r][c] === 1) {
-        // $(`#row-${r}-column-${c}`).css('background-color', 'yellow');
         $(`#row-${r}-column-${c}`).addClass('bg-warning').removeClass('bg-white');
       } else {
         $(`#row-${r}-column-${c}`).addClass('bg-white')
           .removeClass('bg-danger bg-warning');
-        // $(`#row-${r}-column-${c}`).css('background-color', 'blue');
-        // $(`#row-${r}-column-${c}`).toggleClass('bg-primary bg-danger');
       }
     }
   }
