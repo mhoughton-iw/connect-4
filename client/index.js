@@ -122,6 +122,18 @@ function setUpGame() {
   $('.reset').show();
 }
 
+function onNewUserClick() {
+  $('#new-user-form').show();
+  $('#existing-user-form').hide();
+  $('#user-area').hide();
+}
+
+function onExistingUserClick(name) {
+  $('#existing-user-form').show();
+  $('#new-user-form').hide();
+  $('#user-area').hide();
+}
+
 function setUpUserPage() {
   $.get(`${rootDir}/users/names`, (nameArray) => {
     for (let n = 0; n < nameArray.length; n++) {
@@ -134,8 +146,9 @@ function loadUserPage() {
   setUpUserPage();
   $('#game-area').hide();
   $('#new-user').click(() => {
-    $('#user-area').hide();
-    $('#game-area').show();
+    // $('#user-area').hide();
+    onNewUserClick();
+    // $('#game-area').show();
   });
 }
 

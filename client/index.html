@@ -27,6 +27,30 @@
       </div>
     </div>
   </div>
+  <div class="container" id="new-user-form">
+    <form>
+      <div class="form-group">
+        <label for="new-user-form-label">Name</label>
+        <input type="text" class="form-control" id="new-user-form-name">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+  <div class="container" id="existing-user-form">
+    <form>
+      <div class="form-group">
+        <label for="existing-user-form-label">Name</label>
+        <select class="form-control" id="existing-user-form-name">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
   <div id="game-area">
     <p class="bg-danger" id="winner-display">The winner is <span id="winner-name"></span></p>
     <div id="player-display">
@@ -50,6 +74,7 @@
       <button type="button" class="btn btn-secondary btn-lg reset" id="reset-menu">Main Menu</button>
       <button type="button" class="btn btn-danger btn-lg reset" id="reset-score">Reset Score</button>
     </div> 
+    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
