@@ -55,6 +55,8 @@ function checkWinner(game) {
   return null;
 }
 
+// doesn't need testing
+/* istanbul ignore next */
 if (typeof module !== 'undefined') {
   module.exports = {
     getWinningRow,

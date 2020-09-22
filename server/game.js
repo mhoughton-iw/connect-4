@@ -37,6 +37,8 @@ class Game {
   }
 }
 
+// doesn't need testing
+/* istanbul ignore next */
 if (typeof module !== 'undefined') {
   module.exports = {
     Game, 

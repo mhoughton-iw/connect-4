@@ -1,5 +1,4 @@
 const express = require('express');
-const { fdatasync } = require('fs');
 const fs = require('fs').promises;
 const { Game } = require('./game.js');
 const { checkWinner } = require('./winner.js');
@@ -66,7 +65,7 @@ app.get('/game/state', (_req, res) => {
 
 app.post('/game/board/col/:c', (req, res) => {
   game.takeTurn(req.params.c);
-  console.log(game.state);
+  // console.log(game.state);
   res.status(200);
   res.send(game);
 });
@@ -87,6 +86,8 @@ app.get('/users/names', async (req, res) => {
   res.json(names);
 });
 
+// doesn't need testing
+/* istanbul ignore next */
 if (process.env.NODE_ENV !== 'test') {
   app.listen(8080, (err) => {
     if (err) {
@@ -97,6 +98,8 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
+// doesn't need testing
+/* istanbul ignore next */
 if (typeof module !== 'undefined') {
   module.exports = {
     app,
