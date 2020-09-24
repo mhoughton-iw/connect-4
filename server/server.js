@@ -89,7 +89,7 @@ app.get('/users/names', async (req, res) => {
 // doesn't need testing
 /* istanbul ignore next */
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(8080, (err) => {
+  app.listen(3012, (err) => {
     if (err) {
       console.error(err);
     } else {

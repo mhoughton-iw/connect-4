@@ -1,5 +1,6 @@
 // using shorthand global
-const rootDir = 'http://localhost:8080';
+const rootDir = 'http://localhost:3012';
+// const rootDir = 'http://ec2-18-133-196-251.eu-west-2.compute.amazonaws.com:3012'
 
 function renderWelcomeArea() {
   $('#welcome-area').show();
