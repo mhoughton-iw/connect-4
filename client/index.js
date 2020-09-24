@@ -29,18 +29,46 @@ function renderGameArea() {
   $('#welcome-area').hide();
 }
 
-// updates board UI using current game state
-function updateBoard(game) {
+function renderWinner(winner) {
+  if (winner === 0) {
+    $('#winner-name').text('red');
+    $('#winner-display')
+      .addClass('bg-danger text-white')
+      .removeClass('bg-warning text-dark');
+  } else {
+    $('#winner-name').text('yellow');
+    $('#winner-display')
+      .addClass('bg-warning text-dark')
+      .removeClass('bg-danger text-white');
+  }
+  $('#winner-display').show();
+}
+
+// translate single cell of game state to a board counter colour
+function getCellColourClass(cellState) {
+  let colourClass = 'bg-white';
+  if (cellState === 0) {
+    colourClass = 'bg-danger';
+  } else if (cellState === 1) {
+    colourClass = 'bg-warning';
+  }
+  return colourClass;
+}
+
+// use current game state to render client side board
+function renderBoard(game) {
+  $('#grid').empty();
+  // set up divs for storing each row of elements
   for (let r = 0; r < game.numRows; r += 1) {
+    $('#grid').prepend($('<div></div>').addClass('row bg-primary')
+      .prop('id', `row-${r}`)
+      .css('width', `${game.numCols * 100}px`));
+
+    // set up divs for individual elements
     for (let c = 0; c < game.numCols; c += 1) {
-      if (game.state[r][c] === 0) {
-        $(`#row-${r}-column-${c}`).addClass('bg-danger').removeClass('bg-white');
-      } else if (game.state[r][c] === 1) {
-        $(`#row-${r}-column-${c}`).addClass('bg-warning').removeClass('bg-white');
-      } else {
-        $(`#row-${r}-column-${c}`).addClass('bg-white')
-          .removeClass('bg-danger bg-warning');
-      }
+      const colourClass = getCellColourClass(game.state[r][c]);
+      $(`#row-${r}`).append($('<div></div>').addClass(`column ${colourClass}`)
+        .prop('id', `row-${r}-column-${c}`));
     }
   }
 }
@@ -54,7 +82,7 @@ function updateScores() {
 }
 
 function onResetGameClick() {
-  $.post(`${rootDir}/game/reset`, (game) => updateBoard(game));
+  $.post(`${rootDir}/game/reset`, (game) => renderBoard(game));
   $('#winner-display').hide();
 }
 
@@ -64,48 +92,25 @@ function onResetMenuClick() {
 }
 
 function onResetScoreClick() {
-  $.post(`${rootDir}/game/scores/reset`, (data) => {
-    // TODO: change this to something meaningful
-    $('#red-player-score').text(data.red);
-    $('#yellow-player-score').text(data.yellow);
+  $.post(`${rootDir}/game/scores/reset`, (score) => {
+    $('#red-player-score').text(score.red);
+    $('#yellow-player-score').text(score.yellow);
   });
 }
 
-// handle both reset game and reset score buttons
-function setUpResetButtons() {
-  $('#reset-game').click(() => onResetGameClick());
-  $('#reset-menu').click(() => onResetMenuClick());
-  $('#reset-score').click(() => onResetScoreClick());
-}
-
-function renderWinner(winner) {
-  if (winner === 0) {
-    $('#winner-name').text('red');
-    $('#winner-display').addClass('bg-danger').addClass('text-white')
-      .removeClass('bg-warning')
-      .removeClass('text-dark');
-  } else {
-    $('#winner-name').text('yellow');
-    $('#winner-display').addClass('bg-warning').addClass('text-dark')
-      .removeClass('bg-danger')
-      .removeClass('text-white');
-  }
-  $('#winner-display').show();
-}
-
+// make POST request to place counter
 function handleTurn(c) {
-  // send request to place counter
   $.ajax({
     type: 'POST',
     url: `/game/board/col/${c}`,
     success: (game) => {
-      updateBoard(game);
+      renderBoard(game);
     },
   });
 }
 
+// make GET request for game winner and update winner/score UI as needed
 function handleWinner() {
-  // handle result of win check
   $.get(`${rootDir}/game/winner`, (winner) => {
     if (winner !== null) {
       updateScores();
@@ -130,28 +135,13 @@ function renderTopButtons(game) {
   }
 }
 
-// grid is defined using total number of rows and columns
-function renderGrid(numRows, numCols) {
-  $('#grid').empty();
-  // set up divs for storing each row of elements
-  for (let r = 0; r < numRows; r += 1) {
-    $('#grid').prepend($('<div></div>').addClass('row bg-primary')
-      .prop('id', `row-${r}`)
-      .css('width', `${numCols * 100}px`));
-
-    // set up divs for individual elements
-    for (let c = 0; c < numCols; c += 1) {
-      $(`#row-${r}`).append($('<div></div>').addClass('column bg-white')
-        .prop('id', `row-${r}-column-${c}`));
-    }
-  }
-}
-
 function onNewUserClick() {
   renderUserArea();
   renderUserForm('#new-user-form');
 
   $('#new-user-form').submit((event) => {
+    // TODO: generate uuid and add new user
+    // TODO: update score board name
     renderGameArea();
     event.preventDefault();
   });
@@ -162,12 +152,13 @@ function onExistingUserClick() {
   renderUserForm('#existing-user-form');
 
   $('#existing-user-form').submit((event) => {
+    // TODO: update score board name
     renderGameArea();
     event.preventDefault();
   });
 }
 
-function getExistingUsers() {
+function updateExistingUserForm() {
   $.get(`${rootDir}/users/names`, (nameArray) => {
     for (let n = 0; n < nameArray.length; n++) {
       $('#existing-user-form-name').append($(`<option>${nameArray[n]}</option>`));
@@ -177,7 +168,7 @@ function getExistingUsers() {
 
 function setUpUsers() {
   updateScores();
-  getExistingUsers();
+  updateExistingUserForm();
 }
 
 function setUpWelcomeArea() {
@@ -186,11 +177,18 @@ function setUpWelcomeArea() {
   $('#existing-user').click(() => onExistingUserClick());
 }
 
+// set up functionality for all reset buttons
+function setUpResetButtons() {
+  $('#reset-game').click(() => onResetGameClick());
+  $('#reset-menu').click(() => onResetMenuClick());
+  $('#reset-score').click(() => onResetScoreClick());
+}
+
 function setUpBoard() {
   // this should be changed if game should persist after refresh
   $.post(`${rootDir}/game/reset`, (game) => {
     renderTopButtons(game);
-    renderGrid(game.numRows, game.numCols);
+    renderBoard(game);
   });
 }
 
