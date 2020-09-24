@@ -4,7 +4,7 @@
   "description": "Connect4 Mini Project",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage --watchAll"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "jest": "^26.4.2",
+    "jest-each": "^26.4.2",
     "mock-fs": "^4.13.0",
     "supertest": "^4.0.2"
   },
