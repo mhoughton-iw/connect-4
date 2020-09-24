@@ -1,6 +1,34 @@
 // using shorthand global
 const rootDir = 'http://localhost:8080';
 
+function renderWelcomeArea() {
+  $('#welcome-area').show();
+  $('#user-area').hide();
+  $('#game-area').hide();
+}
+
+function renderUserArea() {
+  $('#user-area').show();
+  $('#welcome-area').hide();
+  $('#game-area').hide();
+}
+
+function renderUserForm(form) {
+  if (form === '#existing-user-form') {
+    $('#existing-user-form').show();
+    $('#new-user-form').hide();
+  } else {
+    $('#new-user-form').show();
+    $('#existing-user-form').hide();
+  }
+}
+
+function renderGameArea() {
+  $('#game-area').show();
+  $('#user-area').hide();
+  $('#welcome-area').hide();
+}
+
 // updates board UI using current game state
 function updateBoard(game) {
   for (let r = 0; r < game.numRows; r += 1) {
@@ -17,7 +45,7 @@ function updateBoard(game) {
   }
 }
 
-function getScores() {
+function updateScores() {
   $.get(`${rootDir}/game/scores`, (scores) => {
     // TODO: change this to something meaningful
     $('#red-player-score').text(scores.red);
@@ -25,66 +53,75 @@ function getScores() {
   });
 }
 
-function onResetGameButtonClick() {
-  $.post(`${rootDir}/game/reset`, (game) => {
-    updateBoard(game);
-  });
+function onResetGameClick() {
+  $.post(`${rootDir}/game/reset`, (game) => updateBoard(game));
   $('#winner-display').hide();
 }
 
-// handle both reset game and reset score buttons
-function listenForReset() {
-  $('#reset-game').click(() => onResetGameButtonClick());
-  $('#reset-menu').click(() => {
-    onResetGameButtonClick();
-    $('#game-area').hide();
-    $('#user-area').show();
+function onResetMenuClick() {
+  onResetGameClick();
+  renderWelcomeArea();
+}
+
+function onResetScoreClick() {
+  $.post(`${rootDir}/game/scores/reset`, (data) => {
+    // TODO: change this to something meaningful
+    $('#red-player-score').text(data.red);
+    $('#yellow-player-score').text(data.yellow);
   });
-  $('#reset-score').click(() => {
-    $.post(`${rootDir}/game/scores/reset`, (data) => {
-      // TODO: change this to something meaningful
-      $('#red-player-score').text(data.red);
-      $('#yellow-player-score').text(data.yellow);
-    });
+}
+
+// handle both reset game and reset score buttons
+function setUpResetButtons() {
+  $('#reset-game').click(() => onResetGameClick());
+  $('#reset-menu').click(() => onResetMenuClick());
+  $('#reset-score').click(() => onResetScoreClick());
+}
+
+function renderWinner(winner) {
+  if (winner === 0) {
+    $('#winner-name').text('red');
+    $('#winner-display').addClass('bg-danger').addClass('text-white')
+      .removeClass('bg-warning')
+      .removeClass('text-dark');
+  } else {
+    $('#winner-name').text('yellow');
+    $('#winner-display').addClass('bg-warning').addClass('text-dark')
+      .removeClass('bg-danger')
+      .removeClass('text-white');
+  }
+  $('#winner-display').show();
+}
+
+function handleTurn(c) {
+  // send request to place counter
+  $.ajax({
+    type: 'POST',
+    url: `/game/board/col/${c}`,
+    success: (game) => {
+      updateBoard(game);
+    },
+  });
+}
+
+function handleWinner() {
+  // handle result of win check
+  $.get(`${rootDir}/game/winner`, (winner) => {
+    if (winner !== null) {
+      updateScores();
+      renderWinner(winner);
+    }
   });
 }
 
 // handle interactive column placement buttons
 function onTopButtonClick(c) {
-  // send request to place counter
-  $.ajax({
-    type: 'POST',
-    url: `/game/board/col/${c}`,
-    // should remove the following but want to understand when I need them
-    // data: JSON.stringify(c),
-    // contentType: 'application/json',
-    success: (game) => {
-      updateBoard(game);
-    },
-  });
-
-  // handle result of win check
-  $.get(`${rootDir}/game/winner`, (winner) => {
-    if (winner !== null) {
-      getScores();
-      if (winner === 0) {
-        $('#winner-name').text('red');
-        $('#winner-display').addClass('bg-danger').addClass('text-white')
-          .removeClass('bg-warning')
-          .removeClass('text-dark');
-      } else {
-        $('#winner-name').text('yellow');
-        $('#winner-display').addClass('bg-warning').addClass('text-dark')
-          .removeClass('bg-danger')
-          .removeClass('text-white');
-      }
-      $('#winner-display').show();
-    }
-  });
+  handleTurn(c);
+  handleWinner();
 }
 
 // set up divs for counter placement events
-function createTopButtons(game) {
+function renderTopButtons(game) {
   $('#top-buttons').empty();
   for (let c = 0; c < game.numCols; c++) {
     $('#top-buttons').append($(`<button>${c}</button>`).addClass('btn btn-secondary')
@@ -94,7 +131,7 @@ function createTopButtons(game) {
 }
 
 // grid is defined using total number of rows and columns
-function createGrid(numRows, numCols) {
+function renderGrid(numRows, numCols) {
   $('#grid').empty();
   // set up divs for storing each row of elements
   for (let r = 0; r < numRows; r += 1) {
@@ -110,48 +147,63 @@ function createGrid(numRows, numCols) {
   }
 }
 
-// handle game set up (both UI and calls to server)
-function setUpGame() {
-  // this should be changed for multiplayer compatibility
-  getScores();
-  // this should be changed if game should persist after refresh
-  $.post(`${rootDir}/game/reset`, (data) => {
-    createTopButtons(data);
-    createGrid(data.numRows, data.numCols);
-  });
-  $('.reset').show();
-}
-
 function onNewUserClick() {
-  $('#new-user-form').show();
-  $('#existing-user-form').hide();
-  $('#user-area').hide();
+  renderUserArea();
+  renderUserForm('#new-user-form');
+
+  $('#new-user-form').submit((event) => {
+    renderGameArea();
+    event.preventDefault();
+  });
 }
 
-function onExistingUserClick(name) {
-  $('#existing-user-form').show();
-  $('#new-user-form').hide();
-  $('#user-area').hide();
+function onExistingUserClick() {
+  renderUserArea();
+  renderUserForm('#existing-user-form');
+
+  $('#existing-user-form').submit((event) => {
+    renderGameArea();
+    event.preventDefault();
+  });
 }
 
-function setUpUserPage() {
+function getExistingUsers() {
   $.get(`${rootDir}/users/names`, (nameArray) => {
     for (let n = 0; n < nameArray.length; n++) {
-      $('#userDrop').append($(`<a>${nameArray[n]}</a>`).addClass('dropdown-item'));
+      $('#existing-user-form-name').append($(`<option>${nameArray[n]}</option>`));
     }
   });
 }
 
-function loadUserPage() {
-  setUpUserPage();
-  $('#game-area').hide();
-  $('#new-user').click(() => {
-    // $('#user-area').hide();
-    onNewUserClick();
-    // $('#game-area').show();
+function setUpUsers() {
+  updateScores();
+  getExistingUsers();
+}
+
+function setUpWelcomeArea() {
+  // this should be changed for multiplayer compatibility
+  $('#new-user').click(() => onNewUserClick());
+  $('#existing-user').click(() => onExistingUserClick());
+}
+
+function setUpBoard() {
+  // this should be changed if game should persist after refresh
+  $.post(`${rootDir}/game/reset`, (game) => {
+    renderTopButtons(game);
+    renderGrid(game.numRows, game.numCols);
   });
 }
 
-loadUserPage();
+function setUpGameArea() {
+  setUpResetButtons();
+  setUpBoard();
+}
+
+// handle game set up (both UI and calls to server)
+function setUpGame() {
+  setUpUsers();
+  setUpWelcomeArea();
+  setUpGameArea();
+}
+
 setUpGame();
-listenForReset();

@@ -9,7 +9,7 @@
 
 <body>
   <h1>Connect4</h1>
-  <div class="container" id="user-area">
+  <div class="container" id="welcome-area">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Welcome!</h5>
@@ -17,35 +17,24 @@
         <p class="card-text">Please create a new user or select an existing one.</p>
         <div class="dropdown">
           <button type="button" class="btn btn-primary" id="new-user">New User</button>
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="signInDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Sign In
-          </button>
-          <div class="dropdown-menu" id="userDrop" aria-labelledby="signInDrop">
-            <!-- existing users will be added here -->
-          </div>
+          <button type="button" class="btn btn-secondary" id="existing-user">Sign In</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="container" id="new-user-form">
-    <form>
+  <div class="container" id="user-area">
+    <form id="new-user-form">
       <div class="form-group">
         <label for="new-user-form-label">Name</label>
         <input type="text" class="form-control" id="new-user-form-name">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-  </div>
-  <div class="container" id="existing-user-form">
-    <form>
+    <form id="existing-user-form">
       <div class="form-group">
         <label for="existing-user-form-label">Name</label>
         <select class="form-control" id="existing-user-form-name">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+          <!-- existing users will be added here -->
         </select>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
