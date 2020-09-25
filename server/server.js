@@ -48,9 +48,13 @@ app.post('/game/scores/reset', async (_req, res) => {
   res.json({ red: 0, yellow: 0 });
 });
 
-app.get('/game/winner', async (_req, res) => {
+app.post('/game/winner', async (_req, res) => {
   const winner = checkWinner(game);
   if (winner !== null) {
+    console.log('we have a winner');
+    console.log(game.gameOver);
+    game.setGameOver();
+    console.log(game.gameOver);
     const wins = [0, 0];
     wins[winner] += 1;
     await writeScores(wins[0], wins[1]);
@@ -60,7 +64,7 @@ app.get('/game/winner', async (_req, res) => {
 
 app.get('/game/state', (_req, res) => {
   res.status(200);
-  res.send(game);
+  res.json(game);
 });
 
 app.post('/game/board/col/:c', (req, res) => {

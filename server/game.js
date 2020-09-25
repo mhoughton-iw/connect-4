@@ -9,7 +9,7 @@ class Game {
     this.numCols = numCols;
     this.turn = 0;
     this.state = this.getInitialState();
-    this.gameOver = false
+    this.gameOver = false;
   }
 
   getInitialState() {
@@ -25,6 +25,10 @@ class Game {
     this.turn = 0;
     this.state = this.getInitialState();
     this.gameOver = false;
+  }
+
+  setGameOver() {
+    this.gameOver = true;
   }
 
   takeTurn(c) {
@@ -46,7 +50,7 @@ class Game {
         }
       }
     }
-    this.gameOver = true;
+    this.setGameOver();
     return true;
   }
 }

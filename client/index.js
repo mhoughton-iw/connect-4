@@ -101,6 +101,18 @@ function onResetScoreClick() {
 
 // make POST request to place counter
 function handleTurn(c) {
+  // first check if game has finished
+  $.get(`${rootDir}/game/state`, (game) => {
+    console.log('check for gameOver');
+    console.log(game);
+    console.log(`${game}`);
+    console.log(game.gameOver);
+    if (game.gameOver) {
+      console.log('check for gameOver: true');
+      onResetGameClick();
+    }
+  });
+
   $.ajax({
     type: 'POST',
     url: `/game/board/col/${c}`,
@@ -112,7 +124,7 @@ function handleTurn(c) {
 
 // make GET request for game winner and update winner/score UI as needed
 function handleWinner() {
-  $.get(`${rootDir}/game/winner`, (winner) => {
+  $.post(`${rootDir}/game/winner`, (winner) => {
     if (winner !== null) {
       refreshScores();
       renderWinner(winner);
@@ -159,7 +171,7 @@ function onExistingUserClick() {
   });
 }
 
-function updateExistingUserForm() {
+function refreshExistingUserForm() {
   $.get(`${rootDir}/users/names`, (nameArray) => {
     for (let n = 0; n < nameArray.length; n++) {
       $('#existing-user-form-name').append($(`<option>${nameArray[n]}</option>`));
@@ -169,7 +181,7 @@ function updateExistingUserForm() {
 
 function setUpUsers() {
   refreshScores();
-  updateExistingUserForm();
+  refreshExistingUserForm();
 }
 
 function setUpWelcomeArea() {
