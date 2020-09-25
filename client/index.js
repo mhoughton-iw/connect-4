@@ -74,7 +74,7 @@ function renderBoard(game) {
   }
 }
 
-function updateScores() {
+function refreshScores() {
   $.get(`${rootDir}/game/scores`, (scores) => {
     // TODO: change this to something meaningful
     $('#red-player-score').text(scores.red);
@@ -114,7 +114,7 @@ function handleTurn(c) {
 function handleWinner() {
   $.get(`${rootDir}/game/winner`, (winner) => {
     if (winner !== null) {
-      updateScores();
+      refreshScores();
       renderWinner(winner);
     }
   });
@@ -168,7 +168,7 @@ function updateExistingUserForm() {
 }
 
 function setUpUsers() {
-  updateScores();
+  refreshScores();
   updateExistingUserForm();
 }
 

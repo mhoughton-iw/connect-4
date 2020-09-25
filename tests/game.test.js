@@ -18,11 +18,13 @@ describe('resetGame', () => {
     [32, 100, 100],
     [71, 8, 5],
     [15, 6, 7],
-  ]).it('should reset the turn count', (actualTurn, nr, nc) => {
+  ]).it('should reset the turn count and gameOver', (actualTurn, nr, nc) => {
     const game = new Game(nr, nc);
     game.turn = actualTurn;
+    game.gameOver = true;
     game.resetGame();
     expect(game.turn).toBe(0);
+    expect(game.gameOver).toBe(false);
   });
   each([
     [[
@@ -136,5 +138,57 @@ describe('takeTurn', () => {
     expect(game.takeTurn(t1)).toBe(true);
     expect(game.takeTurn(t2)).toBe(true);
     expect(game.state).toStrictEqual(expected);
+  });
+});
+
+describe('checkStateFull', () => {
+  each([
+    [
+      3, 4,
+      [
+        [0, 1, 0, 1],
+        [1, 0, 1, 0],
+        [0, 1, 0, 1],
+      ],
+    ],
+    [
+      4, 4,
+      [
+        [0, 0, 1, 1],
+        [1, 1, 0, 0],
+        [0, 0, 1, 1],
+        [1, 1, 0, 0],
+      ],
+    ],
+  ]).it('should return true when game state is full', (nr, nc, actual) => {
+    const game = new Game(nr, nc);
+    game.state = actual;
+    expect(game.gameOver).toBe(false);
+    expect(game.checkStateFull()).toBe(true);
+    expect(game.gameOver).toBe(true);
+  });
+  each([
+    [
+      4, 4,
+      [
+        [0, 0, 1, 1],
+        [1, 1, 0, 0],
+        [0, 0, 1, 1],
+        [1, 1, null, 0],
+      ],
+    ],
+    [
+      4, 4,
+      [
+        [0, 1, 0, 0],
+        [null, 1, null, null],
+        [null, 1, null, null],
+        [null, null, null, null],
+      ],
+    ],
+  ]).it('should return false when game state is not full', (nr, nc, actual) => {
+    const game = new Game(nr, nc);
+    game.state = actual;
+    expect(game.checkStateFull()).toBe(false);
   });
 });

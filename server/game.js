@@ -9,6 +9,7 @@ class Game {
     this.numCols = numCols;
     this.turn = 0;
     this.state = this.getInitialState();
+    this.gameOver = false
   }
 
   getInitialState() {
@@ -23,6 +24,7 @@ class Game {
   resetGame() {
     this.turn = 0;
     this.state = this.getInitialState();
+    this.gameOver = false;
   }
 
   takeTurn(c) {
@@ -34,6 +36,18 @@ class Game {
       }
     }
     return false;
+  }
+
+  checkStateFull() {
+    for (let r = 0; r < this.numRows; r++) {
+      for (let c = 0; c < this.numCols; c++) {
+        if (this.state[r][c] === null) {
+          return false;
+        }
+      }
+    }
+    this.gameOver = true;
+    return true;
   }
 }
 

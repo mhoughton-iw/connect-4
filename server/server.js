@@ -48,12 +48,12 @@ app.post('/game/scores/reset', async (_req, res) => {
   res.json({ red: 0, yellow: 0 });
 });
 
-app.get('/game/winner', (_req, res) => {
+app.get('/game/winner', async (_req, res) => {
   const winner = checkWinner(game);
   if (winner !== null) {
     const wins = [0, 0];
     wins[winner] += 1;
-    writeScores(wins[0], wins[1]);
+    await writeScores(wins[0], wins[1]);
   }
   res.json(winner);
 });
